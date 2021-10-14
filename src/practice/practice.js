@@ -1,11 +1,10 @@
 import React from "react";
+import ToggleButtonList from "../general-components/toggle-button-list";
 import {
   randomChoice,
   capitalize,
   makeSentenceObject,
-  checkOnlySpanishCharacters,
 } from "../helper-functions";
-import Styles from "./practice.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faAngleDown,
@@ -27,6 +26,7 @@ export default class Practice extends React.Component {
       selectedTenses: [false, true, true],
     };
     this.clearInputAndNewQuestion = this.clearInputAndNewQuestion.bind(this);
+    this.handleTenseChange = this.handleTenseChange.bind(this);
   }
 
   componentDidMount() {
@@ -47,9 +47,7 @@ export default class Practice extends React.Component {
 
   handleInputChange = (e) => {
     const inputValue = e.target.value;
-    if (checkOnlySpanishCharacters(inputValue)) {
-      this.setState({ input: inputValue });
-    }
+    this.setState({ input: inputValue });
   };
 
   handleNewQuestion = () => {
@@ -101,10 +99,7 @@ export default class Practice extends React.Component {
       inputWordsArray.join(" ") === answers.normalArray.join(" ")
     ) {
       userInputSpansArray.push(
-        <span
-          className={Styles.correctFeedback}
-          key={inputWordsArray.join(" ")}
-        >
+        <span className={"correct-feedback"} key={inputWordsArray.join(" ")}>
           {inputWordsArray.join(" ")}
         </span>
       );
@@ -113,10 +108,7 @@ export default class Practice extends React.Component {
       // if incorrect number of words
       if (inputWordsArray.length !== answers.normalArray.length) {
         userInputSpansArray.push(
-          <span
-            className={Styles.wrongFeedback}
-            key={inputWordsArray.join(" ")}
-          >
+          <span className={"wrong-feedback"} key={inputWordsArray.join(" ")}>
             {inputWordsArray.join(" ")}
           </span>
         );
@@ -129,48 +121,33 @@ export default class Practice extends React.Component {
           }
           if (word === answers.normalArray[index]) {
             userInputSpansArray.push(
-              <span
-                className={Styles.correctFeedback}
-                key={word + index.toString()}
-              >
-                {word}
+              <React.Fragment key={word + index.toString()}>
+                <span className={"correct-feedback"}>{word}</span>
                 {endSpace}
-              </span>
+              </React.Fragment>
             );
           } else {
             userInputSpansArray.push(
-              <span
-                className={Styles.wrongFeedback}
-                key={word + index.toString()}
-              >
-                {word}
+              <React.Fragment key={word + index.toString()}>
+                <span className={"wrong-feedback"}>{word}</span>
                 {endSpace}
-              </span>
+              </React.Fragment>
             );
           }
         });
       }
     }
 
-    let correctness = "CORRECT";
-    let actualAnswer = null;
-    let correctnessClassName = Styles.rightTitle;
-    if (!isCorrect) {
-      correctness = "INCORRECT";
-      actualAnswer = answers.normalArray.join(" ");
-      correctnessClassName = Styles.wrongTitle;
-    }
-
     this.setState({
       feedbackMessage: {
         question: this.state.question.join(" "),
-        correctness: correctness,
+        isCorrect: isCorrect,
         userInputSpansArray: userInputSpansArray,
-        actualAnswer: actualAnswer,
-        correctnessClassName: correctnessClassName,
+        actualAnswer: answers.normalArray.join(" "),
       },
       input: "",
     });
+
     this.handleNewQuestion();
   };
 
@@ -187,123 +164,106 @@ export default class Practice extends React.Component {
     const feedbackMessage = this.state.feedbackMessage;
     const selectedTenses = this.state.selectedTenses;
 
-    return (
-      <section
-        className="section-container light-section"
-        ref={this.props.selfRef}
-      >
-        <header className={Styles.questionHeader}>
-          <h1 className={Styles.sectionTitle}>Practice</h1>
-          <h2 className={`${Styles.tensesLabel} ${Styles.displayMobile}`}>
-            Tenses:
-          </h2>
-          <ul className={Styles.tenseList}>
-            {["past", "present", "future"].map((tense, index) => {
-              let className;
-              let faIcon;
-              if (selectedTenses[index]) {
-                className = Styles.tenseButtonOn;
-                faIcon = (
-                  <FontAwesomeIcon
-                    icon={faCheckSquare}
-                    style={{ width: "1em" }}
-                  />
-                );
-              } else {
-                className = Styles.tenseButtonOff;
-                faIcon = (
-                  <FontAwesomeIcon
-                    icon={faTimesCircle}
-                    style={{ width: "1em" }}
-                  />
-                );
-              }
+    let feedbackSectionContents;
+    if (!feedbackMessage) {
+      feedbackSectionContents = (
+        <>
+          <p>...</p>
+          <p>English phrase: </p>
+          <p>Your answer: </p>
+          <p>Correct answer: </p>
+        </>
+      );
+    } else {
+      feedbackSectionContents = (
+        <>
+          {feedbackMessage.isCorrect ? (
+            <p className="font-bold text-blue-700">CORRECT</p>
+          ) : (
+            <p className="font-bold text-red-700">INCORRECT</p>
+          )}
+          <p>English phrase: {capitalize(feedbackMessage.question)}</p>
+          <p>Your answer: {feedbackMessage.userInputSpansArray}</p>
+          <p>Correct answer: {feedbackMessage.actualAnswer}</p>
+        </>
+      );
+    }
 
-              return (
-                <li key={tense + String(index)}>
-                  <button
-                    className={`${className} ${Styles.tenseButton}`}
-                    onClick={() => this.handleTenseChange(index)}
-                  >
-                    {capitalize(tense)}{" "}
-                    <span className={Styles.displayDesktop}>Tense </span>
-                    {faIcon}
-                  </button>
-                </li>
-              );
-            })}
-          </ul>
-        </header>
-        <div className={Styles.questionMain}>
+    return (
+      <section ref={this.props.selfRef}>
+        <header className="px-8 py-4">
+          <h1 className="font-black text-4xl uppercase">Practice</h1>
+          <h2 className="mt-2">Select Tenses:</h2>
+          <ToggleButtonList
+            listClassNames="flex space-x-2 mt-1"
+            buttonStyle="button mt-2 px-2 py-1 group"
+            onStyle="button-on"
+            onMarker={
+              <FontAwesomeIcon
+                icon={faCheckSquare}
+                style={{ width: "1em" }}
+                className="fa-icon-on-button"
+              />
+            }
+            offStyle="button-off"
+            offMarker={
+              <FontAwesomeIcon
+                icon={faTimesCircle}
+                style={{ width: "1em" }}
+                className="fa-icon-off-button"
+              />
+            }
+            labelsArray={["Past", "Present", "Future"]}
+            valuesArray={selectedTenses}
+            handleButtonClick={this.handleTenseChange}
+          />
           <button
-            className={`${Styles.mobileNewQuestionButton} ${Styles.displayMobile}`}
+            className="button stateless-button mt-2 px-2 py-1"
             onClick={this.clearInputAndNewQuestion}
           >
-            New Question
+            Generate Different Question
           </button>
-          <p className={Styles.questionSubtitle}>Translate the following: </p>
-          <h2 className={Styles.question}>
+          <hr className="mt-4" />
+          <p className="mt-4 subtitle-text text-xs">
+            Translate the following english phrase into spanish:{" "}
+          </p>
+          <p className="text-2xl font-bold">
             {question ? capitalize(question.join(" ")) : null}
-          </h2>
-          <form className={Styles.answerForm} onSubmit={this.handleSubmit}>
-            <button
-              className={`${Styles.desktopNewQuestionButton} ${Styles.displayDesktop}`}
-              type="button"
-              onClick={this.clearInputAndNewQuestion}
-            >
-              New Question
-            </button>
+          </p>
+        </header>
+        <div className="px-8 pb-4">
+          <form className="flex space-x-2" onSubmit={this.handleSubmit}>
             <input
+              className="normal-input"
+              placeholder="Enter answer here..."
               type="text"
-              placeholder="Enter answer here :)"
-              className={Styles.answerInput}
               required
               value={input}
               onChange={(e) => this.handleInputChange(e)}
               maxLength="50"
             />
-            <button type="submit" className={Styles.answerSubmit}>
+            <button className="button stateless-button px-4 py-1" type="submit">
               <FontAwesomeIcon icon={faAngleRight} />
             </button>
           </form>
 
-          <div className={Styles.feedback}>
-            {feedbackMessage ? (
-              <>
-                <p className={feedbackMessage.correctnessClassName}>
-                  {feedbackMessage.correctness}
-                </p>
-                <p>The english phrase was:</p>
-                <p>{capitalize(feedbackMessage.question)}</p>
-                <br />
-                <p>Your answer was:</p>
-                <p className={Styles.feedbackUserAnswerParagraph}>
-                  {feedbackMessage.userInputSpansArray}
-                </p>
-                <br />
-                {feedbackMessage.actualAnswer ? (
-                  <>
-                    <p>The correct answer was: </p>
-                    <p>{feedbackMessage.actualAnswer}</p>{" "}
-                  </>
-                ) : null}
-              </>
-            ) : null}
-          </div>
+          <section className="mt-2 subtitle-text">
+            {feedbackSectionContents}
+          </section>
+          <a
+            href="#verb-manager"
+            className="text-center block mt-4 font-semibold lg:hidden"
+            onClick={() => {
+              this.props.sectionBelow.current.scrollIntoView({
+                behavior: "smooth",
+              });
+            }}
+          >
+            Manage which verbs you're tested on
+            <br />
+            <FontAwesomeIcon icon={faAngleDown} />
+          </a>
         </div>
-        <a
-          href="#verb-manager"
-          className={Styles.verbManagerAnchor}
-          onClick={() => {
-            this.props.sectionBelow.current.scrollIntoView({
-              behavior: "smooth",
-            });
-          }}
-        >
-          Manage which verbs you're tested on
-          <br />
-          <FontAwesomeIcon icon={faAngleDown} />
-        </a>
       </section>
     );
   }

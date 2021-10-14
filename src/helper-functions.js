@@ -71,7 +71,7 @@ export function esConjugate(infinitive) {
 export function checkOnlySpanishCharacters(string) {
   if (!/^[a-záéíóúüñ]*$/i.test(string)) {
     window.alert(
-      "Please only type characters that match this pattern: [a-z] [áéíóúüñ]. In either upper or lower case."
+      "Please only type letters that are in the spanish alphabet: a-z and áéíóúüñ"
     );
     return false;
   }
@@ -153,7 +153,9 @@ export function makeSentenceObject(verbObject, tense) {
     };
     englishSentence = [
       pronounObject.english,
-      toBeConjugation[conjugationIndex],
+      pronounObject.spanish !== "usted"
+        ? toBeConjugation[conjugationIndex]
+        : "are",
       "going",
       "to",
       verbObject.englishPresent,

@@ -1,34 +1,28 @@
 import React, { useState } from "react";
 import { capitalize } from "../helper-functions";
 import VerbAdditionWindow from "./verb-addition-window";
-import Styles from "./verb-manager.module.css";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faPlusSquare,
-  faMinusSquare,
-  faAngleUp,
-} from "@fortawesome/free-solid-svg-icons";
+
+const DEFAULT_VERB = {
+  spanishInfinitive: "",
+  englishPast: "",
+  englishPresent: "",
+  past: ["", "", "", "", "", ""],
+  present: ["", "", "", "", "", ""],
+  isRegular: true,
+};
 
 export default function VerbManager(props) {
-  const [verbToAdd, setVerbToAdd] = useState(null);
-  const [selectedVerbs, setSelectedVerbs] = useState([]);
+  const [verbToAdd, setVerbToAdd] = useState(DEFAULT_VERB);
+  const [vawIsDisplayed, setVawIsDisplayed] = useState(false);
 
+  const selectedVerbs = props.selectedVerbs;
+  const setSelectedVerbs = props.setSelectedVerbs;
   const listOfVerbs = props.listOfVerbs;
   const setListOfVerbs = props.setListOfVerbs;
 
-  function handleAddVerb(e) {
-    setVerbToAdd({
-      spanishInfinitive: "",
-      englishPast: "",
-      englishPresent: "",
-      past: ["", "", "", "", "", ""],
-      present: ["", "", "", "", "", ""],
-      isRegular: true,
-    });
-  }
-
   function handleEditVerb(e) {
     setVerbToAdd(JSON.parse(e.currentTarget.getAttribute("data-verb-object")));
+    setVawIsDisplayed(true);
   }
 
   function handleVerbSelection(e, clickedVerbObject) {
@@ -90,119 +84,118 @@ export default function VerbManager(props) {
       updatedListOfVerbs.push(newVerb);
     }
     setListOfVerbs(updatedListOfVerbs);
-    setVerbToAdd(null);
+    setVawIsDisplayed(false);
+    setVerbToAdd(DEFAULT_VERB);
+    setSelectedVerbs([]);
   }
 
-  let deleteButtonText;
-  let deleteButtonClassName = Styles.deactivatedDeleteButton;
+  let deleteButtonContent;
+  let deleteButtonClassName =
+    "bg-white uppercase tracking-wider text-sm font-semibold rounded shadow cursor-not-allowed";
   let deleteButtonIsDisabled = true;
-  console.log(listOfVerbs.length);
   if (listOfVerbs.length === selectedVerbs.length) {
-    deleteButtonText = "Must have at least 1 verb";
+    deleteButtonContent = "Cannot delete all verbs";
   } else {
     if (selectedVerbs.length === 0) {
-      deleteButtonText = "Select a verb to delete it";
+      deleteButtonContent = "Select a verb to delete it";
     } else {
       deleteButtonIsDisabled = false;
-      deleteButtonClassName = "";
-      deleteButtonText = (
+      deleteButtonClassName = "button button-off";
+      deleteButtonContent = (
         <>
-          Delete Verb <FontAwesomeIcon icon={faMinusSquare} />
+          <span className="text-red-700 font-black">-</span> Delete Verb
         </>
       );
     }
   }
 
   return (
-    <section
-      onClick={() => {
-        setSelectedVerbs([]);
-      }}
-      className={`section-container dark-section`}
-      ref={props.selfRef}
-    >
-      <a
-        href="#practice"
-        className={Styles.practiceAnchor}
-        onClick={() => {
-          props.sectionAbove.current.scrollIntoView({ behavior: "smooth" });
-        }}
-      >
-        <FontAwesomeIcon icon={faAngleUp} />
-      </a>
-      <h1 className={Styles.sectionTitle}>Manage Verbs</h1>
-      <p className={Styles.verbSubtitle}>Double click a verb row to edit it</p>
-      <div className={Styles.tableAndButtonsWrapper}>
-        <div className={Styles.tableWrapper}>
-          <table className={Styles.verbTable}>
-            <thead>
-              <tr>
-                <th>Spanish Infinitive</th>
-                <th>English Infinitive</th>
-                <th className={Styles.hideMobile}>Ending Type</th>
-                <th className={Styles.hideMobile}>Is Regular?</th>
-              </tr>
-            </thead>
-            <tbody>
-              {listOfVerbs.map((verbObject) => {
-                let className = "";
-                for (const selectedVerbObject of selectedVerbs) {
-                  if (
-                    verbObject.spanishInfinitive ===
-                    selectedVerbObject.spanishInfinitive
-                  ) {
-                    className = Styles.selected;
-                  }
-                }
-
-                return (
-                  <React.Fragment key={verbObject.spanishInfinitive}>
-                    <tr
-                      onDoubleClick={handleEditVerb}
-                      onClick={(e) => handleVerbSelection(e, verbObject)}
-                      data-verb-object={JSON.stringify(verbObject)}
-                      className={className}
-                    >
-                      <td>{capitalize(verbObject.spanishInfinitive)}</td>
-                      <td>To {verbObject.englishPresent}</td>
-                      <td className={Styles.hideMobile}>
-                        {verbObject.isRegular
-                          ? verbObject.spanishInfinitive.slice(-2)
-                          : "N/A"}
-                      </td>
-                      <td className={Styles.hideMobile}>
-                        {verbObject.isRegular ? "Regular" : "Irregular"}
-                      </td>
-                    </tr>
-                  </React.Fragment>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
-        <div className={Styles.buttonContainer}>
+    <>
+      <section className="px-8 py-4" ref={props.selfRef}>
+        <h1 className="font-black text-4xl uppercase">Manage Verbs</h1>
+        <div className="flex space-x-4 mt-4">
           <button
-            onClick={handleAddVerb}
-            className={Styles.verbManagementButton}
+            onClick={() => {
+              setVawIsDisplayed(true);
+            }}
+            className="button stateless-button px-2 py-1"
           >
-            Add New Verb <FontAwesomeIcon icon={faPlusSquare} />
+            <span className="text-blue-700 font-black">+</span> Add New Verb
           </button>
           <button
             onClick={handleDeleteVerb}
-            className={`${Styles.verbManagementButton} ${deleteButtonClassName}`}
+            className={`${deleteButtonClassName} px-2 py-1`}
             disabled={deleteButtonIsDisabled}
           >
-            {deleteButtonText}
+            {deleteButtonContent}
           </button>
         </div>
-      </div>
-      {verbToAdd ? (
-        <VerbAdditionWindow
-          verbObject={verbToAdd}
-          setVerbObject={setVerbToAdd}
-          handleSubmit={handleVerbSubmit}
-        />
-      ) : null}
-    </section>
+        <ul className="list-disc list-inside mt-8">
+          <li className="subtitle-text">Double click a verb row to edit it</li>
+          <li className="subtitle-text mt-2">Click anywhere to deselect</li>
+        </ul>
+
+        <table className="mt-8 simple-table">
+          <thead className="subtitle-text">
+            <tr>
+              <th>Spanish Infinitive</th>
+              <th>English Infinitive</th>
+              <th className="hidden lg:table-cell">Ending Type</th>
+              <th className="hidden lg:table-cell">Is Regular?</th>
+            </tr>
+          </thead>
+          <tbody>
+            {listOfVerbs.map((verbObject) => {
+              let className = "";
+              for (const selectedVerbObject of selectedVerbs) {
+                if (
+                  verbObject.spanishInfinitive ===
+                  selectedVerbObject.spanishInfinitive
+                ) {
+                  className = "selected-row";
+                }
+              }
+
+              return (
+                <React.Fragment key={verbObject.spanishInfinitive}>
+                  <tr
+                    onDoubleClick={handleEditVerb}
+                    onClick={(e) => handleVerbSelection(e, verbObject)}
+                    data-verb-object={JSON.stringify(verbObject)}
+                    className={className}
+                  >
+                    <td>{capitalize(verbObject.spanishInfinitive)}</td>
+                    <td>To {verbObject.englishPresent}</td>
+                    <td className="hidden lg:table-cell">
+                      {verbObject.isRegular
+                        ? verbObject.spanishInfinitive.slice(-2)
+                        : "N/A"}
+                    </td>
+                    <td className="hidden lg:table-cell">
+                      {verbObject.isRegular ? "Regular" : "Irregular"}
+                    </td>
+                  </tr>
+                </React.Fragment>
+              );
+            })}
+          </tbody>
+        </table>
+      </section>
+      <div
+        className={`fixed inset-0 z-10 bg-black bg-opacity-50 ${
+          vawIsDisplayed ? "block" : "hidden"
+        }`}
+        onClick={() => {
+          setVawIsDisplayed(false);
+        }}
+      ></div>
+      <VerbAdditionWindow
+        displayed={vawIsDisplayed}
+        setDisplayed={setVawIsDisplayed}
+        verbToAdd={verbToAdd}
+        setVerbToAdd={setVerbToAdd}
+        handleSubmit={handleVerbSubmit}
+      />
+    </>
   );
 }
