@@ -100,7 +100,7 @@ export default function VerbAdditionWindow(props) {
 
   function handleClose() {
     props.setDisplayed(false);
-    setVerbToAdd();
+    setVerbToAdd(DEFAULT_VERB);
   }
 
   return (
