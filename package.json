@@ -2,7 +2,7 @@
   "name": "spanish-webapp",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://github.com/bogdan-kapelyukh/es-perfecto",
+  "homepage": "http://bogdan-kapelyukh.github.io/es-perfecto",
   "dependencies": {
     "@craco/craco": "^6.3.0",
     "@fortawesome/fontawesome-svg-core": "^1.2.36",
