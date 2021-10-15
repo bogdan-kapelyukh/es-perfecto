@@ -62,6 +62,28 @@ export default function VerbAdditionWindow(props) {
     });
   }
 
+  function handleEnglishPresentChange(e) {
+    if (/to /i.test(e.target.value)) {
+      window.alert(
+        "Please enter the present tense english as just one word e.g. 'speak'\nNOT 'to speak'"
+      );
+      setVerbToAdd({
+        ...verbToAdd,
+        englishPresent: "",
+      });
+      return;
+    }
+
+    if (!checkOnlySpanishCharacters(e.target.value)) {
+      return;
+    }
+
+    setVerbToAdd({
+      ...verbToAdd,
+      englishPresent: e.target.value.toLowerCase(),
+    });
+  }
+
   function handleArrayInputChange(e, arrayToChange, indexToChange) {
     if (!checkOnlySpanishCharacters(e.target.value)) {
       return;
@@ -211,7 +233,7 @@ export default function VerbAdditionWindow(props) {
             }
             sharedId="englishPresent"
             textFieldValue={verbToAdd.englishPresent}
-            textFieldOnChange={handleInputChange}
+            textFieldOnChange={handleEnglishPresentChange}
             requireTextField={true}
             maxLength={25}
             textFieldTabIndex={props.displayed ? 0 : -1}
@@ -276,7 +298,7 @@ export default function VerbAdditionWindow(props) {
           </div>
         </div>
         <button
-          className={`mt-4 button bg-yellow-300 px-4 py-2 hover:bg-yellow-700 lg:mx-auto lg:block lg:mt-10`}
+          className={`mt-4 button bg-yellow-300 px-4 py-2 hover:bg-yellow-700 lg:mx-auto lg:block lg:mt-16`}
           type="submit"
           tabIndex={props.displayed ? 0 : -1}
         >
