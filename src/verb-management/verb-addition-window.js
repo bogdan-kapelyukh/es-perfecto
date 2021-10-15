@@ -97,8 +97,8 @@ export default function VerbAdditionWindow(props) {
     <div
       className={`fixed inset-0 z-20 overflow-scroll bg-gray-50 px-10 py-8 ${
         props.displayed
-          ? "transform-none transition-transform duration-500"
-          : "transform translate-y-full transition-transform duration-500"
+          ? "transform-none transition-transform duration-500 visible"
+          : "transform translate-y-full transition-transform duration-500 invisible"
       }
       lg:w-max
       lg:mx-auto
