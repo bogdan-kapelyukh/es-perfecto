@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { capitalize } from "../helper-functions";
 import VerbAdditionWindow from "./verb-addition-window";
 
@@ -13,12 +13,21 @@ const DEFAULT_VERB = {
 
 export default function VerbManager(props) {
   const [verbToAdd, setVerbToAdd] = useState(DEFAULT_VERB);
-  const [vawIsDisplayed, setVawIsDisplayed] = useState(false);
+  const outerDivRef = useRef(null);
 
+  const vawIsDisplayed = props.vawIsDisplayed;
+  const setVawIsDisplayed = props.setVawIsDisplayed;
   const selectedVerbs = props.selectedVerbs;
   const setSelectedVerbs = props.setSelectedVerbs;
   const listOfVerbs = props.listOfVerbs;
   const setListOfVerbs = props.setListOfVerbs;
+
+  function resetVaw() {
+    setVawIsDisplayed(false);
+    setVerbToAdd(DEFAULT_VERB);
+    outerDivRef.current.scrollTop = 0;
+    document.activeElement.blur();
+  }
 
   function handleEditVerb(e) {
     setVerbToAdd(JSON.parse(e.currentTarget.getAttribute("data-verb-object")));
@@ -84,26 +93,30 @@ export default function VerbManager(props) {
       updatedListOfVerbs.push(newVerb);
     }
     setListOfVerbs(updatedListOfVerbs);
-    setVawIsDisplayed(false);
-    setVerbToAdd(DEFAULT_VERB);
-    setSelectedVerbs([]);
+    resetVaw();
   }
 
-  let deleteButtonContent;
+  let deleteButtonContent = (
+    <>
+      <span className="font-black">-</span> Delete Verb
+      {selectedVerbs.length > 1 ? "s" : ""}
+    </>
+  );
   let deleteButtonClassName =
-    "bg-white uppercase tracking-wider text-sm font-semibold rounded shadow cursor-not-allowed";
+    "button bg-warmGray-300 text-warmGray-500 cursor-default";
   let deleteButtonIsDisabled = true;
   if (listOfVerbs.length === selectedVerbs.length) {
-    deleteButtonContent = "Cannot delete all verbs";
+    // deleteButtonContent = "Cannot delete all verbs";
   } else {
     if (selectedVerbs.length === 0) {
-      deleteButtonContent = "Select a verb to delete it";
+      // deleteButtonContent = "Select a verb to delete it";
     } else {
       deleteButtonIsDisabled = false;
       deleteButtonClassName = "button button-off";
       deleteButtonContent = (
         <>
           <span className="text-red-700 font-black">-</span> Delete Verb
+          {selectedVerbs.length > 1 ? "s" : ""}
         </>
       );
     }
@@ -113,7 +126,7 @@ export default function VerbManager(props) {
     <>
       <section className="px-8 py-4" ref={props.selfRef}>
         <h1 className="font-black text-4xl uppercase">Manage Verbs</h1>
-        <div className="flex space-x-4 mt-4">
+        <div className="flex space-x-4 mt-8">
           <button
             onClick={() => {
               setVawIsDisplayed(true);
@@ -132,7 +145,8 @@ export default function VerbManager(props) {
         </div>
         <ul className="list-disc list-inside mt-8">
           <li className="subtitle-text">Double click a verb row to edit it</li>
-          <li className="subtitle-text mt-2">Click anywhere to deselect</li>
+          <li className="subtitle-text mt-2">Tap and hold to edit on mobile</li>
+          <li className="subtitle-text mt-2">Click/tap anywhere to deselect</li>
         </ul>
 
         <table className="mt-8 simple-table">
@@ -146,13 +160,13 @@ export default function VerbManager(props) {
           </thead>
           <tbody>
             {listOfVerbs.map((verbObject) => {
-              let className = "";
+              let className = "hover:bg-warmGray-400";
               for (const selectedVerbObject of selectedVerbs) {
                 if (
                   verbObject.spanishInfinitive ===
                   selectedVerbObject.spanishInfinitive
                 ) {
-                  className = "selected-row";
+                  className = "bg-blue-300 hover:bg-blue-400";
                 }
               }
 
@@ -162,7 +176,7 @@ export default function VerbManager(props) {
                     onDoubleClick={handleEditVerb}
                     onClick={(e) => handleVerbSelection(e, verbObject)}
                     data-verb-object={JSON.stringify(verbObject)}
-                    className={className}
+                    className={`${className} cursor-pointer`}
                   >
                     <td>{capitalize(verbObject.spanishInfinitive)}</td>
                     <td>To {verbObject.englishPresent}</td>
@@ -186,10 +200,12 @@ export default function VerbManager(props) {
           vawIsDisplayed ? "block" : "hidden"
         }`}
         onClick={() => {
-          setVawIsDisplayed(false);
+          resetVaw();
         }}
       ></div>
       <VerbAdditionWindow
+        resetVaw={resetVaw}
+        outerDivRef={outerDivRef}
         displayed={vawIsDisplayed}
         setDisplayed={setVawIsDisplayed}
         verbToAdd={verbToAdd}

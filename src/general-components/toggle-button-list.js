@@ -19,6 +19,7 @@ function ToggleButtonList(props) {
             <button
               className={`${props.buttonStyle} ${stateClassName}`}
               onClick={() => props.handleButtonClick(index)}
+              tabIndex={props.buttonTabIndex || "0"}
             >
               {label} {stateMarker}
             </button>

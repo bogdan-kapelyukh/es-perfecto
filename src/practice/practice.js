@@ -190,10 +190,10 @@ export default class Practice extends React.Component {
     }
 
     return (
-      <section ref={this.props.selfRef}>
-        <header className="px-8 py-4">
+      <section ref={this.props.selfRef} className="px-8 pt-4 pb-10">
+        <header className="pb-4">
           <h1 className="font-black text-4xl uppercase">Practice</h1>
-          <h2 className="mt-2">Select Tenses:</h2>
+          <h2 className="mt-8">Select Tenses:</h2>
           <ToggleButtonList
             listClassNames="flex space-x-2 mt-1"
             buttonStyle="button mt-2 px-2 py-1 group"
@@ -216,22 +216,24 @@ export default class Practice extends React.Component {
             labelsArray={["Past", "Present", "Future"]}
             valuesArray={selectedTenses}
             handleButtonClick={this.handleTenseChange}
+            buttonTabIndex={this.props.vawIsDisplayed ? "-1" : "0"}
           />
           <button
             className="button stateless-button mt-2 px-2 py-1"
             onClick={this.clearInputAndNewQuestion}
+            tabIndex={this.props.vawIsDisplayed ? "-1" : "0"}
           >
             Generate Different Question
           </button>
           <hr className="mt-4" />
-          <p className="mt-4 subtitle-text text-xs">
+          <p className="mt-4 subtitle-text tracking-wider text-xs">
             Translate the following english phrase into spanish:{" "}
           </p>
           <p className="text-2xl font-bold">
             {question ? capitalize(question.join(" ")) : null}
           </p>
         </header>
-        <div className="px-8 pb-4">
+        <div>
           <form className="flex space-x-2" onSubmit={this.handleSubmit}>
             <input
               className="normal-input"
@@ -241,18 +243,21 @@ export default class Practice extends React.Component {
               value={input}
               onChange={(e) => this.handleInputChange(e)}
               maxLength="50"
+              tabIndex={this.props.vawIsDisplayed ? "-1" : "0"}
             />
-            <button className="button stateless-button px-4 py-1" type="submit">
+            <button
+              className="button stateless-button px-4 py-1"
+              type="submit"
+              tabIndex={this.props.vawIsDisplayed ? "-1" : "0"}
+            >
               <FontAwesomeIcon icon={faAngleRight} />
             </button>
           </form>
 
-          <section className="mt-2 subtitle-text">
-            {feedbackSectionContents}
-          </section>
+          <section className="mt-2">{feedbackSectionContents}</section>
           <a
             href="#verb-manager"
-            className="text-center block mt-4 font-semibold lg:hidden"
+            className="text-center block mt-32 font-semibold lg:hidden"
             onClick={() => {
               this.props.sectionBelow.current.scrollIntoView({
                 behavior: "smooth",

@@ -11,6 +11,7 @@ function LabelAndTextField({
   requireTextField,
   disableTextField,
   maxLength,
+  textFieldTabIndex,
 }) {
   return (
     <div className={divClassName}>
@@ -25,6 +26,7 @@ function LabelAndTextField({
         required={requireTextField}
         disabled={disableTextField}
         maxLength={maxLength}
+        tabIndex={textFieldTabIndex}
       />
     </div>
   );

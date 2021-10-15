@@ -12,15 +12,6 @@ const GENERAL_DIV_CLASS_NAME =
 
 const IMPORTANT_FIELD_DIV_CLASS_NAME = "flex flex-col space-y-2";
 
-const DEFAULT_VERB = {
-  spanishInfinitive: "",
-  englishPast: "",
-  englishPresent: "",
-  past: ["", "", "", "", "", ""],
-  present: ["", "", "", "", "", ""],
-  isRegular: true,
-};
-
 export default function VerbAdditionWindow(props) {
   const verbToAdd = props.verbToAdd;
   const setVerbToAdd = props.setVerbToAdd;
@@ -99,8 +90,7 @@ export default function VerbAdditionWindow(props) {
   }
 
   function handleClose() {
-    props.setDisplayed(false);
-    setVerbToAdd(DEFAULT_VERB);
+    props.resetVaw();
   }
 
   return (
@@ -114,10 +104,15 @@ export default function VerbAdditionWindow(props) {
       lg:mx-auto
       lg:overflow-y-auto
       `}
+      ref={props.outerDivRef}
     >
       <div className="flex">
         <h1 className="font-black text-4xl uppercase">Add/edit a verb</h1>
-        <button onClick={handleClose} className="ml-auto text-4xl">
+        <button
+          onClick={handleClose}
+          className="ml-auto text-4xl"
+          tabIndex={props.displayed ? 0 : -1}
+        >
           <FontAwesomeIcon
             icon={faTimesCircle}
             className="hover:text-blue-700"
@@ -138,8 +133,8 @@ export default function VerbAdditionWindow(props) {
           <li
             className={`button flex space-x-2 items-center px-2 py-1 border-2  ${
               verbToAdd.isRegular
-                ? "button-on border-blue-700 border-opacity-100"
-                : "button-off border-opacity-0"
+                ? "button-on border-blue-700"
+                : "button-off border-transparent"
             }`}
             onClick={() => setVerbToAdd({ ...verbToAdd, isRegular: true })}
           >
@@ -151,13 +146,14 @@ export default function VerbAdditionWindow(props) {
               value="true"
               checked={verbToAdd.isRegular === true}
               onChange={() => setVerbToAdd({ ...verbToAdd, isRegular: true })}
+              tabIndex={props.displayed ? 0 : -1}
             />
           </li>
           <li
             className={`flex space-x-2 items-center button px-2 py-1 border-2 ${
               !verbToAdd.isRegular
-                ? "button-on border-blue-700 border-opacity-100"
-                : "button-off border-opacity-0"
+                ? "button-on border-blue-700"
+                : "button-off border-transparent"
             }`}
             onClick={() => setVerbToAdd({ ...verbToAdd, isRegular: false })}
           >
@@ -169,6 +165,7 @@ export default function VerbAdditionWindow(props) {
               value="false"
               checked={verbToAdd.isRegular === false}
               onChange={() => setVerbToAdd({ ...verbToAdd, isRegular: false })}
+              tabIndex={props.displayed ? 0 : -1}
             />
           </li>
         </ul>
@@ -187,6 +184,7 @@ export default function VerbAdditionWindow(props) {
             textFieldOnChange={handleInfinitiveChange}
             requireTextField={true}
             maxLength={25}
+            textFieldTabIndex={props.displayed ? 0 : -1}
           />
           <LabelAndTextField
             divClassName={IMPORTANT_FIELD_DIV_CLASS_NAME}
@@ -201,6 +199,7 @@ export default function VerbAdditionWindow(props) {
             textFieldOnChange={handleInputChange}
             requireTextField={true}
             maxLength={25}
+            textFieldTabIndex={props.displayed ? 0 : -1}
           />
           <LabelAndTextField
             divClassName={IMPORTANT_FIELD_DIV_CLASS_NAME}
@@ -215,6 +214,7 @@ export default function VerbAdditionWindow(props) {
             textFieldOnChange={handleInputChange}
             requireTextField={true}
             maxLength={25}
+            textFieldTabIndex={props.displayed ? 0 : -1}
           />
         </div>
         <hr className="mt-8" />
@@ -241,6 +241,7 @@ export default function VerbAdditionWindow(props) {
                   requireTextField={true}
                   disableTextField={verbToAdd.isRegular ? true : false}
                   maxLength={25}
+                  textFieldTabIndex={props.displayed ? 0 : -1}
                 />
               );
             })}
@@ -268,6 +269,7 @@ export default function VerbAdditionWindow(props) {
                   requireTextField={true}
                   disableTextField={verbToAdd.isRegular ? true : false}
                   maxLength={25}
+                  textFieldTabIndex={props.displayed ? 0 : -1}
                 />
               );
             })}
@@ -276,6 +278,7 @@ export default function VerbAdditionWindow(props) {
         <button
           className={`mt-4 button bg-yellow-300 px-4 py-2 hover:bg-yellow-700 lg:mx-auto lg:block lg:mt-10`}
           type="submit"
+          tabIndex={props.displayed ? 0 : -1}
         >
           Submit
         </button>
