@@ -1,20 +1,20 @@
 {
   "files": {
-    "main.css": "/es-perfecto/static/css/main.d39acf71.chunk.css",
-    "main.js": "/es-perfecto/static/js/main.5c8180f8.chunk.js",
-    "main.js.map": "/es-perfecto/static/js/main.5c8180f8.chunk.js.map",
+    "main.css": "/es-perfecto/static/css/main.72a3f635.chunk.css",
+    "main.js": "/es-perfecto/static/js/main.933554ff.chunk.js",
+    "main.js.map": "/es-perfecto/static/js/main.933554ff.chunk.js.map",
     "runtime-main.js": "/es-perfecto/static/js/runtime-main.997b92a5.js",
     "runtime-main.js.map": "/es-perfecto/static/js/runtime-main.997b92a5.js.map",
-    "static/js/2.b952cbbb.chunk.js": "/es-perfecto/static/js/2.b952cbbb.chunk.js",
-    "static/js/2.b952cbbb.chunk.js.map": "/es-perfecto/static/js/2.b952cbbb.chunk.js.map",
+    "static/js/2.73e44287.chunk.js": "/es-perfecto/static/js/2.73e44287.chunk.js",
+    "static/js/2.73e44287.chunk.js.map": "/es-perfecto/static/js/2.73e44287.chunk.js.map",
     "index.html": "/es-perfecto/index.html",
-    "static/css/main.d39acf71.chunk.css.map": "/es-perfecto/static/css/main.d39acf71.chunk.css.map",
-    "static/js/2.b952cbbb.chunk.js.LICENSE.txt": "/es-perfecto/static/js/2.b952cbbb.chunk.js.LICENSE.txt"
+    "static/css/main.72a3f635.chunk.css.map": "/es-perfecto/static/css/main.72a3f635.chunk.css.map",
+    "static/js/2.73e44287.chunk.js.LICENSE.txt": "/es-perfecto/static/js/2.73e44287.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
     "static/js/runtime-main.997b92a5.js",
-    "static/js/2.b952cbbb.chunk.js",
-    "static/css/main.d39acf71.chunk.css",
-    "static/js/main.5c8180f8.chunk.js"
+    "static/js/2.73e44287.chunk.js",
+    "static/css/main.72a3f635.chunk.css",
+    "static/js/main.933554ff.chunk.js"
   ]
 }
