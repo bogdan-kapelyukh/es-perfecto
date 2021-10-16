@@ -1,4 +1,5 @@
 import React from "react";
+import { capitalize } from "../helper-functions";
 import { esConjugate, checkOnlySpanishCharacters } from "../helper-functions";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -6,9 +7,10 @@ import {
   faQuestionCircle,
 } from "@fortawesome/free-regular-svg-icons";
 import LabelAndTextField from "../general-components/label-and-text-field";
+import ReactTooltip from "react-tooltip";
 
 const GENERAL_DIV_CLASS_NAME =
-  "flex flex-col lg:flex-row lg:items-center lg:space-x-2 space-y-2";
+  "flex flex-col space-y-2 md:flex-row md:items-center md:space-x-2 md:justify-end";
 
 const IMPORTANT_FIELD_DIV_CLASS_NAME = "flex flex-col space-y-2";
 
@@ -124,11 +126,12 @@ export default function VerbAdditionWindow(props) {
       }
       lg:w-max
       lg:mx-auto
-      lg:overflow-y-auto
+      md:overflow-y-auto
       `}
       ref={props.outerDivRef}
     >
-      <div className="flex">
+      <ReactTooltip />
+      <div className="flex items-start">
         <h1 className="font-black text-4xl uppercase">Add/edit a verb</h1>
         <button
           onClick={handleClose}
@@ -192,14 +195,14 @@ export default function VerbAdditionWindow(props) {
           </li>
         </ul>
         <hr className="mt-4" />
-        <div className="flex flex-col lg:flex-row lg:justify-center lg:space-x-8 space-y-2 lg:space-y-0 mt-4">
+        <div className="flex flex-col md:flex-row md:justify-center md:space-x-8 space-y-2 md:space-y-0 mt-4">
           <LabelAndTextField
             divClassName={IMPORTANT_FIELD_DIV_CLASS_NAME}
             textFieldClassName="normal-input"
             labelText={
-              <>
+              <span data-tip="e.g. hablar, comer, vivir">
                 Spanish Infinitive <FontAwesomeIcon icon={faQuestionCircle} />
-              </>
+              </span>
             }
             sharedId="spanishInfinitive"
             textFieldValue={verbToAdd.spanishInfinitive}
@@ -212,9 +215,12 @@ export default function VerbAdditionWindow(props) {
             divClassName={IMPORTANT_FIELD_DIV_CLASS_NAME}
             textFieldClassName="normal-input"
             labelText={
-              <>
+              <span
+                data-multiline
+                data-tip="E.g. For 'descansar' the verb to rest, please enter: 'rested.' <br /> Further examples: 'to eat' - 'ate', 'to swim' - 'swam'"
+              >
                 English Past <FontAwesomeIcon icon={faQuestionCircle} />
-              </>
+              </span>
             }
             sharedId="englishPast"
             textFieldValue={verbToAdd.englishPast}
@@ -227,9 +233,12 @@ export default function VerbAdditionWindow(props) {
             divClassName={IMPORTANT_FIELD_DIV_CLASS_NAME}
             textFieldClassName="normal-input"
             labelText={
-              <>
+              <span
+                data-tip="E.g. for the verb 'to speak' please enter 'speak.'"
+                data-multiline
+              >
                 English Present <FontAwesomeIcon icon={faQuestionCircle} />
-              </>
+              </span>
             }
             sharedId="englishPresent"
             textFieldValue={verbToAdd.englishPresent}
@@ -240,65 +249,48 @@ export default function VerbAdditionWindow(props) {
           />
         </div>
         <hr className="mt-8" />
-        <div className="lg:flex lg:justify-center lg:px-10 lg:space-x-10">
-          <div className="flex flex-col space-y-2 mt-4">
-            <h2 className="font-bold text-xl mb-2">Past Tense</h2>
-            {pronounObjectsArray.map((pronounObject, index) => {
-              return (
-                <LabelAndTextField
-                  divClassName={GENERAL_DIV_CLASS_NAME}
-                  textFieldClassName={
-                    verbToAdd.isRegular ? "autocomplete-field" : "normal-input"
-                  }
-                  textFieldPlaceHolder={
-                    verbToAdd.isRegular ? "Box will autocomplete" : ""
-                  }
-                  key={pronounObject.code + "0"}
-                  labelText={pronounObject.display}
-                  sharedId={pronounObject.code + "0"}
-                  textFieldValue={verbToAdd.past[index]}
-                  textFieldOnChange={(e) =>
-                    handleArrayInputChange(e, "past", index)
-                  }
-                  requireTextField={true}
-                  disableTextField={verbToAdd.isRegular ? true : false}
-                  maxLength={25}
-                  textFieldTabIndex={props.displayed ? 0 : -1}
-                />
-              );
-            })}
-          </div>
-          <hr className="mt-8" />
-          <div className="flex flex-col space-y-2 mt-4">
-            <h2 className="font-bold text-xl mb-2">Present Tense</h2>
-            {pronounObjectsArray.map((pronounObject, index) => {
-              return (
-                <LabelAndTextField
-                  divClassName={GENERAL_DIV_CLASS_NAME}
-                  textFieldClassName={
-                    verbToAdd.isRegular ? "autocomplete-field" : "normal-input"
-                  }
-                  textFieldPlaceHolder={
-                    verbToAdd.isRegular ? "Box will autocomplete" : ""
-                  }
-                  key={pronounObject.code + "0"}
-                  labelText={pronounObject.display}
-                  sharedId={pronounObject.code + "0"}
-                  textFieldValue={verbToAdd.present[index]}
-                  textFieldOnChange={(e) =>
-                    handleArrayInputChange(e, "present", index)
-                  }
-                  requireTextField={true}
-                  disableTextField={verbToAdd.isRegular ? true : false}
-                  maxLength={25}
-                  textFieldTabIndex={props.displayed ? 0 : -1}
-                />
-              );
-            })}
-          </div>
+        <div className="sm:flex sm:justify-center sm:px-5 md:px-10 sm:space-x-8 md:space-x-6 lg:space-x-10">
+          {["past", "present"].map((tenseName, tenseNameIndex) => {
+            return (
+              <React.Fragment key={tenseName}>
+                <div className="flex flex-col space-y-2 mt-4">
+                  <h2 className="font-bold text-xl mb-2 md:text-right">
+                    {capitalize(tenseName)} Tense
+                  </h2>
+                  {pronounObjectsArray.map((pronounObject, index) => {
+                    return (
+                      <LabelAndTextField
+                        divClassName={GENERAL_DIV_CLASS_NAME}
+                        textFieldClassName={
+                          verbToAdd.isRegular
+                            ? "autocomplete-field"
+                            : "normal-input"
+                        }
+                        textFieldPlaceHolder={
+                          verbToAdd.isRegular ? "Box will autocomplete" : ""
+                        }
+                        key={pronounObject.code + "0"}
+                        labelText={pronounObject.display}
+                        sharedId={pronounObject.code + "0"}
+                        textFieldValue={verbToAdd[tenseName][index]}
+                        textFieldOnChange={(e) =>
+                          handleArrayInputChange(e, tenseName, index)
+                        }
+                        requireTextField={true}
+                        disableTextField={verbToAdd.isRegular ? true : false}
+                        maxLength={25}
+                        textFieldTabIndex={props.displayed ? 0 : -1}
+                      />
+                    );
+                  })}
+                </div>
+                {tenseNameIndex !== -1 ? <hr className="mt-8" /> : null}
+              </React.Fragment>
+            );
+          })}
         </div>
         <button
-          className={`mt-4 button bg-yellow-300 px-4 py-2 hover:bg-yellow-700 lg:mx-auto lg:block lg:mt-16`}
+          className={`mt-4 button bg-yellow-300 px-4 py-2 hover:bg-yellow-700 sm:mx-auto sm:block sm:mt-12 lg:mt-16`}
           type="submit"
           tabIndex={props.displayed ? 0 : -1}
         >

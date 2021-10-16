@@ -20,7 +20,7 @@ function App() {
         onClick={() => {
           setSelectedVerbs([]);
         }}
-        className="lg:flex lg:justify-center lg:pt-28 min-h-screen pb-44"
+        className="md:flex md:justify-center md:pt-28 min-h-screen pb-44"
       >
         <Practice
           listOfVerbs={listOfVerbs}

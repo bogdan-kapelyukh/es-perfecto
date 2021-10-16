@@ -105,26 +105,23 @@ export default function VerbManager(props) {
   let deleteButtonClassName =
     "button bg-warmGray-300 text-warmGray-500 cursor-default";
   let deleteButtonIsDisabled = true;
-  if (listOfVerbs.length === selectedVerbs.length) {
-    // deleteButtonContent = "Cannot delete all verbs";
-  } else {
-    if (selectedVerbs.length === 0) {
-      // deleteButtonContent = "Select a verb to delete it";
-    } else {
-      deleteButtonIsDisabled = false;
-      deleteButtonClassName = "button button-off";
-      deleteButtonContent = (
-        <>
-          <span className="text-red-700 font-black">-</span> Delete Verb
-          {selectedVerbs.length > 1 ? "s" : ""}
-        </>
-      );
-    }
+  if (
+    selectedVerbs.length !== 0 &&
+    listOfVerbs.length !== selectedVerbs.length
+  ) {
+    deleteButtonIsDisabled = false;
+    deleteButtonClassName = "button button-off active:bg-red-900";
+    deleteButtonContent = (
+      <>
+        <span className="text-red-700 font-black">-</span> Delete Verb
+        {selectedVerbs.length > 1 ? "s" : ""}
+      </>
+    );
   }
 
   return (
     <>
-      <section className="px-8 py-4" ref={props.selfRef}>
+      <section className="px-8 py-4 md:w-1/2 xl:w-1/3" ref={props.selfRef}>
         <h1 className="font-black text-4xl uppercase">Manage Verbs</h1>
         <div className="flex space-x-4 mt-8">
           <button
@@ -145,7 +142,7 @@ export default function VerbManager(props) {
         </div>
         <ul className="list-disc list-inside mt-8">
           <li className="subtitle-text">Double click a verb row to edit it</li>
-          <li className="subtitle-text mt-2">Tap and hold to edit on mobile</li>
+          {/* <li className="subtitle-text mt-2">Tap and hold to edit on mobile</li> */}
           <li className="subtitle-text mt-2">Click/tap anywhere to deselect</li>
         </ul>
 

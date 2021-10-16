@@ -190,7 +190,10 @@ export default class Practice extends React.Component {
     }
 
     return (
-      <section ref={this.props.selfRef} className="px-8 pt-4 pb-10">
+      <section
+        ref={this.props.selfRef}
+        className="px-8 pt-4 pb-10 md:w-1/2 xl:w-1/3"
+      >
         <header className="pb-4">
           <h1 className="font-black text-4xl uppercase">Practice</h1>
           <h2 className="mt-8">Select Tenses:</h2>
@@ -234,9 +237,12 @@ export default class Practice extends React.Component {
           </p>
         </header>
         <div>
-          <form className="flex space-x-2" onSubmit={this.handleSubmit}>
+          <form
+            className="flex space-x-2 max-w-full"
+            onSubmit={this.handleSubmit}
+          >
             <input
-              className="normal-input"
+              className="normal-input flex-grow"
               placeholder="Enter answer here..."
               type="text"
               required
@@ -254,10 +260,10 @@ export default class Practice extends React.Component {
             </button>
           </form>
 
-          <section className="mt-2">{feedbackSectionContents}</section>
+          <section className="mt-2 lg:mt-8">{feedbackSectionContents}</section>
           <a
             href="#verb-manager"
-            className="text-center block mt-32 font-semibold lg:hidden"
+            className="text-center block mt-32 font-semibold md:hidden"
             onClick={() => {
               this.props.sectionBelow.current.scrollIntoView({
                 behavior: "smooth",
